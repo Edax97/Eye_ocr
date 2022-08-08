@@ -1,0 +1,14 @@
+{
+  "name": "rostros_vision",
+  "version": "1.0.0",
+  "description": "Prediccion de caracteristicas a partir de fotos",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
