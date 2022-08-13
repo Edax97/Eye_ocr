@@ -12,7 +12,8 @@ const fileTypes = [
   "image/svg+xml",
   "image/tiff",
   "image/webp",
-  "image/x-icon"
+  "image/x-icon",
+  "application/pdf"
 ];
 
 //

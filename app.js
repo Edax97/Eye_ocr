@@ -1,16 +1,79 @@
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
+const sleep = require('util').promisify(setTimeout);
+const ComputerVisionClient = require('@azure/cognitiveservices-computervision').ComputerVisionClient;
+const ApiKeyCredentials = require('@azure/ms-rest-js').ApiKeyCredentials;
+
+const createReadStream = require('fs').createReadStream;
 
 // So we can upload files
 const multer = require('multer');
 const upload = multer({dest: "uploads/"})
 
+/*Authenticate*/
+const key = '0290ba551cd140b183ad2751308903f9';
+const endpoint = 'https://talaveraocr.cognitiveservices.azure.com/'
+const cvClient = new ComputerVisionClient(
+  new ApiKeyCredentials({ inHeader: {'Ocp-Apim-Subscription-Key': key,} }), endpoint
+)
+/**/
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+/*Print Text from Read result*/
+function printRecText(readResults) {
+        console.log('Recognized text:');
+        for (const page in readResults) {
+          if (readResults.length > 1) {
+            console.log(`==== Page: ${page}`);
+          }
+          const result = readResults[page];
+          if (result.lines.length) {
+            for (const line of result.lines) {
+              console.log(line.words.map(w => w.text).join(' '));
+            }
+          }
+          else { console.log('No recognized text.'); }
+        }
+      }
+
+// Perform read and await the result from local file
+async function readTextFromLocal(client, path, res) {
+  let post_successful = true;
+  let result_post = await client.readInStream(()=> createReadStream(path))
+    .then((result)=>{
+      return result;
+    })
+    .catch((err)=>{
+      res.sendFile(`${ __dirname }/failed.html`);
+      post_successful = false;
+    });
+  if (!post_successful){ return 0; }
+
+  // Operation ID is last path segment of operationLocation (a URL)
+  let operation = result_post.operationLocation.split('/').slice(-1)[0];
+  console.log(operation);
+
+  // Wait for read recognition to complete
+  while (true) {
+    const read_result = await client.getReadResult(operation);
+    console.log("STATUS", read_result.status);
+    if (read_result.status == 'succeeded'){
+      console.log(printRecText(read_result.analyzeResult.readResults));
+      res.sendFile(`${ __dirname }/results.html`);
+      break;
+    }
+    else if(read_result.status == 'failed'){
+      res.sendFile(`${ __dirname }/failed.html`);
+      break;
+    }
+    await delay(1000);
+  }
+}
+
 app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.static('public'));
-
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
 app.get('/',(req, res)=>{
   res.sendFile(`${ __dirname }/index.html`);
@@ -21,89 +84,9 @@ app.post('/', upload.single("im_file"), (req,res)=>{
   console.log(req.headers);
   console.log(req.body);
   console.log(req.file);
-  const uri = "https://talaveraocr.cognitiveservices.azure.com/vision/v3.2/read/analyze"
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': '0290ba551cd140b183ad2751308903f9',
-    }
-  }
 
-  const im_file = fs.readFileSync(req.file.path);
-  const bodyraw = Buffer.from(im_file);
-  const body_object = JSON.stringify({
+  readTextFromLocal(cvClient, req.file.path, res);
 
-    url: 'https://www.scrolldroll.com/wp-content/uploads/2020/04/Karl-Marx-Quotes-2.jpg',
-  })
-
-  class getvision {
-    constructor(endpoint){
-      this.ended = false;
-      this.options_get = {
-        method: 'GET',
-        headers: {
-          'Ocp-Apim-Subscription-Key': '0290ba551cd140b183ad2751308903f9',
-        }
-      }
-      this.client_req = https.request(endpoint, this.options_get, (response)=>{
-        response.on("data", (d)=>{
-
-          const ocr_res = JSON.parse(d);
-
-          if (ocr_res.status == 'failed' || response.statusCode != 200){
-            this.ended = true;
-            res.sendFile(`${ __dirname }/failed.html`);
-          }
-
-          if (ocr_res.status == 'succeeded'){
-            console.log(response.statusCode);
-            console.log(ocr_res.status);
-
-            this.ended = true;
-
-            console.log(ocr_res.analyzeResult.readResults[0].lines);
-            res.sendFile(`${ __dirname }/results.html`);
-          }
-
-
-        })
-      });
-    }
-    async loopget(){
-      while (!this.ended){
-        await delay(1000);
-        console.log('Trying to get request the results!');
-        this.client_req.end();
-      }
-    }
-  }
-  const reqvision = https.request(uri, options, (response)=>{
-      response.on("data",(data)=>{
-        console.log(JSON.parse(data));
-      })
-      response.on("end", ()=>{
-        console.log(response.statusCode);
-        if (response.statusCode > 202){
-          res.sendFile(`${ __dirname }/failed.html`);
-          console.log("Faileeed");
-          res.sendFile(`${ __dirname }/failed.html`);
-        }
-        else{
-          console.log(response.headers['operation-location']);
-
-          const get_res_azure = new getvision(response.headers['operation-location']);
-          get_res_azure.loopget();
-        }
-
-
-
-      })
-
-  })
-
-  reqvision.write(body_object);
-  reqvision.end();
 })
 
 app.get('/results', (req,res)=>{
