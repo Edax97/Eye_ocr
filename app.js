@@ -1,5 +1,6 @@
 const express = require('express');
 const https = require('https');
+const fs = require('fs');
 
 // So we can upload files
 const multer = require('multer');
@@ -15,11 +16,11 @@ app.get('/',(req, res)=>{
   res.sendFile(`${ __dirname }/index.html`);
 })
 
-app.post('/', upload.array("img_doc"), (req,res)=>{
+app.post('/', upload.single("im_file"), (req,res)=>{
   console.log(`\n${req.method} ${req.url}`);
   console.log(req.headers);
   console.log(req.body);
-  console.log(req.files);
+  console.log(req.file);
   const uri = "https://talaveraocr.cognitiveservices.azure.com/vision/v3.2/read/analyze"
   const options = {
     method: 'POST',
@@ -29,10 +30,12 @@ app.post('/', upload.array("img_doc"), (req,res)=>{
     }
   }
 
-  const body_object = {
+  const im_file = fs.readFileSync(req.file.path);
+  const bodyraw = Buffer.from(im_file);
+  const body_object = JSON.stringify({
 
     url: 'https://www.scrolldroll.com/wp-content/uploads/2020/04/Karl-Marx-Quotes-2.jpg',
-  }
+  })
 
   class getvision {
     constructor(endpoint){
@@ -83,6 +86,8 @@ app.post('/', upload.array("img_doc"), (req,res)=>{
         console.log(response.statusCode);
         if (response.statusCode > 202){
           res.sendFile(`${ __dirname }/failed.html`);
+          console.log("Faileeed");
+          res.sendFile(`${ __dirname }/failed.html`);
         }
         else{
           console.log(response.headers['operation-location']);
@@ -97,7 +102,7 @@ app.post('/', upload.array("img_doc"), (req,res)=>{
 
   })
 
-  reqvision.write(JSON.stringify(body_object));
+  reqvision.write(body_object);
   reqvision.end();
 })
 

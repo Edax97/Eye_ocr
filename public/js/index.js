@@ -1,10 +1,23 @@
 
-const input_file = $('#img_doc');
+const input_file = $('#im_file');
 const preview = $('.preview');
+const form = $("#form_up");
+const fileTypes = [
+  "image/apng",
+  "image/bmp",
+  "image/gif",
+  "image/jpeg",
+  "image/pjpeg",
+  "image/png",
+  "image/svg+xml",
+  "image/tiff",
+  "image/webp",
+  "image/x-icon"
+];
 
 //
 input_file.text("hola");
-console.log("input", input_file);
+
 input_file.css('opacity','0');
 
 //
@@ -25,18 +38,7 @@ input_file.on('change',()=>{
     preview_list = $("<ol class='container'></ol>");
     preview.append(preview_list);
 
-    const fileTypes = [
-  "image/apng",
-  "image/bmp",
-  "image/gif",
-  "image/jpeg",
-  "image/pjpeg",
-  "image/png",
-  "image/svg+xml",
-  "image/tiff",
-  "image/webp",
-  "image/x-icon"
-];
+
 
     for (const file of fileList){
 
@@ -52,4 +54,33 @@ input_file.on('change',()=>{
     }
   }
 
+})
+
+
+form.on("submitt", (e)=>{
+    e.preventDefault();
+    const files = document.getElementById("files");
+    const formData = new FormData();
+    console.log( files.files );
+    if (files.files.length == 0){
+      alert("None selected file!")
+    }
+
+    else if (fileTypes.includes(files.files[0].type)){
+      formData.append("files", files.files[0]);
+
+      fetch("/", {
+            method: 'POST',
+            body: formData,
+            headers: {
+
+              },
+          })
+              .then((res) => console.log(res))
+              .catch((err) => ("Error occured", err));
+    }
+
+    else{
+      alert("Not a compatible image file!")
+    }
 })
