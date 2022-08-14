@@ -25,7 +25,20 @@ body {
   max-width: 42em;
 }
 
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
 
+.img_sel{
+  width: 50%;
+}
+
+.btn{
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
 /*
  * Header
  */
