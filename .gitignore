@@ -2,6 +2,7 @@
 uploads/*
 public/uploads/*
 scss/
+authentication
 
 !uploads/.empty
 !public/uploads/.empty
