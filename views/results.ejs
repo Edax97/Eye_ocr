@@ -48,18 +48,18 @@
           </div>
         </header>
 
-        <main class="px-3">
+        <main class="px-3 mt-4">
           <h1>Text found</h1>
           <p class="lead"></p>
 
             <div class="lead my-5 container">
               <div class="row my-5">
-                <div class="col-5 preview">
+                <div class="col-sm-5 col-12 preview mb-3">
                   <img src="
                   <%=imgPath%>
                   " alt="" class="img_sel">
                 </div>
-                <div class="col extracted">
+                <div class="col-sm-7 col-12 extracted text-break">
                   <%for (let line of textFound){%>
                     <p class='text-start fs-5'><%=line%></p>
                   <%}%>
