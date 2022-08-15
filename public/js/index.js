@@ -44,11 +44,11 @@ input_file.on('change',()=>{
     for (const file of fileList){
 
       if (fileTypes.includes(file.type)){
-        const pre_Item = $("<li class='row'></li>").append(`<div class='col'>${ file.name }</div>`).append(`<img class='img_sel col' src='${ URL.createObjectURL(file) }'></img>`);
+        const pre_Item = $("<li class='row'></li>").append(`<div class='col-4'>${ file.name }</div>`).append(`<img class='img_sel col' src='${ URL.createObjectURL(file) }'></img>`);
         preview_list.append(pre_Item);
       }
       else{
-        const pre_Item = $("<li class='row'></li>").append(`<div class='col'>${ file.name }</div>`).append(`<div class='col'>File extension not supported</div>`)
+        const pre_Item = $("<li class='row'></li>").append(`<div class='col-4'>${ file.name }</div>`).append(`<div class='col'>File extension not supported</div>`)
         preview_list.append(pre_Item);
       }
 
