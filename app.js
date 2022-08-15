@@ -22,20 +22,21 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 /*Print Text from Read result*/
 function printRecText(readResults) {
-        let string_rec='';
+        let ocr_lines=[];
         for (const page in readResults) {
+
           if (readResults.length > 1) {
-            string_rec += `==== Page: ${page}`;
+            ocr_lines.push(`==== Page: ${page}`);
           }
           const result = readResults[page];
           if (result.lines.length) {
             for (const line of result.lines) {
-              string_rec += line.words.map(w => w.text).join(' ');
+              ocr_lines.push(line.words.map(w => w.text).join(' '));
             }
           }
-          else { string_rec += 'No recognized text.'; }
+          else { ocr_lines.push('No recognized text.'); }
         }
-        return string_rec;
+        return ocr_lines;
       }
 
 // Perform read and await the result from local file
@@ -98,7 +99,7 @@ app.post('/', upload.single("im_file"), (req,res)=>{
 })
 
 app.get('/results', (req,res)=>{
-  res.render('results', {textFound: 'No file selected', imgPath: 'no image',});
+  res.render('results', {textFound: ['No file selected'], imgPath: 'no image',});
 })
 
 app.get('/contact', (req,res)=>{

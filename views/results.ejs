@@ -8,6 +8,11 @@
 
     <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/cover/"> -->
 
+    <!-- font awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
 
     <!-- Bootstrap core CSS -->
@@ -20,16 +25,21 @@
 
     <!-- Custom styles for this template -->
     <link href="css/index.css" rel="stylesheet">
-    <link href='css/aditional.css' rel='stylesheet'>
+    <style media="screen">
+      .cover-container{
+        max-width: 85%;
+      }
+    </style>
 
   </head>
 
-    <body class="d-flex h-100 text-center text-white bg-dark">
+    <body class="d-flex h-100 text-center">
 
       <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
           <div>
-            <h3 class="float-md-start mb-0">Cover</h3>
+            <h3 class="float-md-start mb-0"><a rel="noreferrer" href="https://github.com/Edax97" target="_blank">
+                                            <i class="fa fa-github fa-inverse"></i></a> eyeOCR</h3>
             <nav class="nav nav-masthead justify-content-center float-md-end">
               <a class="nav-link"  href="/">Convert</a>
               <a class="nav-link active" aria-current="page" href="#">Results</a>
@@ -50,7 +60,9 @@
                   " alt="" class="img_sel">
                 </div>
                 <div class="col extracted">
-                  <p><%=textFound%></p>
+                  <%for (let line of textFound){%>
+                    <p class='text-start fs-5'><%=line%></p>
+                  <%}%>
                 </div>
               </div>
 

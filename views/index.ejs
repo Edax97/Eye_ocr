@@ -8,6 +8,12 @@
 
     <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/cover/"> -->
 
+    <!-- font awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
 
 
     <!-- Bootstrap core CSS -->
@@ -23,17 +29,17 @@
 
   </head>
 
-    <body class="d-flex h-100 text-center text-white bg-dark">
+    <body class="d-flex h-100 text-center">
 
       <div class="cover-container d-flex w-100 p-3 mx-auto flex-column">
         <header class="mb-auto">
           <div>
-            <h3 class="float-md-start mb-0">eyeOCR</h3>
+            <h3 class="float-md-start mb-0"><a rel="noreferrer" href="https://github.com/Edax97" target="_blank">
+                                            <i class="fa fa-github fa-inverse"></i></a> eyeOCR </h3>
             <nav class="nav nav-masthead justify-content-center float-md-end">
               <a class="nav-link active" aria-current="page" href="#">Convert</a>
               <a class="nav-link" href="/results" type='submit'>Results</a>
               <a class="nav-link" href="/contact" type='submit'>Contact</a>
-
             </nav>
           </div>
         </header>
@@ -42,15 +48,16 @@
           <h1>Recognize text in your photo documents!</h1>
           <p class="lead">Extract textual information from images and pdfs.</p>
 
-            <div class="lead form-image">
+            <div class="lead form-image my-5">
               <form class="" id='form_up' enctype="multipart/form-data" action="/" method="post">
-                <label for="im_file" class='pseudo_select btn btn-lg btn-secondary fw-bold'>Choose file</label>
-                <input type="file" id="im_file" name="im_file" accept="image/png, image/jpeg, image/tiff, application/pdf">
+                <label for="im_file" class='mb-3 btn-lg btn-secondary fw-bold'>Choose file</label>
+                <input type="file" id="im_file" name="im_file" style="width: 0;" accept="image/png, image/jpeg, image/tiff, application/pdf">
                 </br>
                 <div class="preview">
                   <p>No file selected</p>
                 </div>
-                <button type="submit" name="button" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Convert!</button>
+                <button type="submit" name="button" class="my-3 btn-lg btn-dark fw-bold">Convert!</button>
+
 
               </form>
             </div>
