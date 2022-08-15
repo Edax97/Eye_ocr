@@ -7,20 +7,30 @@ const ApiKeyCredentials = require('@azure/ms-rest-js').ApiKeyCredentials;
 
 const createReadStream = require('fs').createReadStream;
 
-// So we can upload files
+// So we can upload the images
 const multer = require('multer');
 const upload = multer({dest: "uploads/"})
 
-/*Authenticate*/
-const key = '0290ba551cd140b183ad2751308903f9';
-const endpoint = 'https://talaveraocr.cognitiveservices.azure.com/'
+/*delay utility*/
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+/*Read text files*/
+const readFileLines = filename =>{
+  return fs.readFileSync(filename).toString('UTF8').split('\n');
+}
+
+/*Create your own file authentication. Then extract the key and endpoint.
+key API
+endpoint of API
+*/
+const [key, endpoint] = readFileLines(`${ __dirname }/authentication`);
+console.log(key, endpoint);
+
 const cvClient = new ComputerVisionClient(
   new ApiKeyCredentials({ inHeader: {'Ocp-Apim-Subscription-Key': key,} }), endpoint
 )
-/**/
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
-/*Print Text from Read result*/
+/*Print Text from Read result into array*/
 function printRecText(readResults) {
         let ocr_lines=[];
         for (const page in readResults) {
