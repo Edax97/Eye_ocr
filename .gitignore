@@ -1,3 +1,7 @@
 
-uploads/
+uploads/*
+public/uploads/*
 scss/
+
+!uploads/.empty
+!public/uploads/.empty
