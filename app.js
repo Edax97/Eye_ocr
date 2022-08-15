@@ -24,7 +24,7 @@ key API
 endpoint of API
 */
 const [key, endpoint] = readFileLines(`${ __dirname }/authentication`);
-console.log(key, endpoint);
+
 
 const cvClient = new ComputerVisionClient(
   new ApiKeyCredentials({ inHeader: {'Ocp-Apim-Subscription-Key': key,} }), endpoint
